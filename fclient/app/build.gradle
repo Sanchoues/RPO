@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "ru.iu3.fclient"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -20,7 +20,7 @@ android {
             }
         }
         ndk {
-            abiFilters "x86_64"
+            abiFilters "arm64-v8a", "x86_64"
         }
     }
 

@@ -41,24 +41,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
         System.loadLibrary("mbedcrypto");
 
     }
-    private String pin;
 
-    @Override
-    public String enterPin(int ptc, String amount) {
-        pin = new String();
-        Intent it = new Intent(MainActivity.this, PinpadActivity.class);
-        it.putExtra("ptc", ptc);
-        it.putExtra("amount", amount);
-        synchronized (MainActivity.this) {
-            activityResultLauncher.launch(it);
-            try {
-                MainActivity.this.wait();
-            } catch (Exception ex) {
-                //todo: log error
-            }
-        }
-        return pin;
-    }
 
 
     @Override
@@ -86,8 +69,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        int res =initRng();
-        byte[] v = randomBytes(10);
+
         // Example of a call to a native method
      //   TextView tv = findViewById(R.id.sample_text);
       //  tv.setText(stringFromJNI());
@@ -110,33 +92,20 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
                         }
                     }
                 });
-
-        TextView ta = findViewById(R.id.txtAmount);
-        String amt = String.valueOf(getIntent().getStringExtra("amount"));
-        Long f = Long.valueOf(amt);
-        DecimalFormat df = new DecimalFormat("#,###,###,##0.00");
-        String s = df.format(f);
-        ta.setText("Сумма: " + s);
-
-        TextView tp = findViewById(R.id.txtPtc);
-        int pts = getIntent().getIntExtra("ptc", 0);
-        if (pts == 2)
-            tp.setText("Осталось две попытки");
-        else if (pts == 1)
-            tp.setText("Осталась одна попытка");
-
+        int res =initRng();
+        byte[] v = randomBytes(10);
     }
 
     public void onButtonClick(View v)
     {
         Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
-        byte[] key = stringToHex("0123456789ABCDEF0123456789ABCDE0");
-        byte[] enc = encrypt(key, stringToHex("000000000000000102"));
-        byte[] dec = decrypt(key, enc);
-        String s = new String(Hex.encodeHex(dec)).toUpperCase();
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-        Intent it = new Intent(this, PinpadActivity.class);
-        startActivity(it);
+     //   byte[] key = stringToHex("0123456789ABCDEF0123456789ABCDE0");
+     //   byte[] enc = encrypt(key, stringToHex("000000000000000102"));
+     //   byte[] dec = decrypt(key, enc);
+      //  String s = new String(Hex.encodeHex(dec)).toUpperCase();
+      //  Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+      //  Intent it = new Intent(this, PinpadActivity.class);
+      //  startActivity(it);
 
         new Thread(()-> {
             try {
@@ -146,9 +115,26 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
                 // todo: log error
             }
         }).start();
-
+        // testHttpClient();
     }
+    private String pin;
 
+    @Override
+    public String enterPin(int ptc, String amount) {
+        pin = "";
+        Intent it = new Intent(MainActivity.this, PinpadActivity.class);
+        it.putExtra("ptc", ptc);
+        it.putExtra("amount", amount);
+        synchronized (MainActivity.this) {
+            activityResultLauncher.launch(it);
+            try {
+                MainActivity.this.wait();
+            } catch (Exception ex) {
+                //todo: log error
+            }
+        }
+        return pin;
+    }
 
     protected void testHttpClient()
     {
@@ -184,8 +170,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
         return p;
     }
 
-    public static native byte[] encrypt(byte[] key, byte[] data);
-    public static native byte[] decrypt(byte[] key, byte[] data);
+
 
 
     /**
@@ -196,5 +181,6 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
     public static native int initRng();
     public static native byte[] randomBytes(int no);
     public native boolean transaction(byte[] trd);
-
+    public static native byte[] encrypt(byte[] key, byte[] data);
+    public static native byte[] decrypt(byte[] key, byte[] data);
 }

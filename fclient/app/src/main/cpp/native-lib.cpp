@@ -146,7 +146,7 @@ void releaseEnv (bool detach, JNIEnv* env)
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_ru_fclient_MainActivity_transaction(JNIEnv *xenv, jobject xthiz, jbyteArray xtrd) {
+Java_ru_iu3_fclient_MainActivity_transaction(JNIEnv *xenv, jobject xthiz, jbyteArray xtrd) {
     jobject thiz = xenv->NewGlobalRef(xthiz);
     jbyteArray trd = (jbyteArray)xenv->NewGlobalRef(xtrd);
     std::thread t([thiz, trd] {
