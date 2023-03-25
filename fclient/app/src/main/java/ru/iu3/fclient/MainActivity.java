@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
 
     public void onButtonClick(View v)
     {
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
      //   byte[] key = stringToHex("0123456789ABCDEF0123456789ABCDE0");
      //   byte[] enc = encrypt(key, stringToHex("000000000000000102"));
      //   byte[] dec = decrypt(key, enc);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
                 // todo: log error
             }
         }).start();
-        // testHttpClient();
+        testHttpClient();
     }
     private String pin;
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity  implements TransactionEvent
         new Thread(() -> {
             try {
                 HttpURLConnection uc = (HttpURLConnection)
-                        (new URL("http://10.0.2.2:8080/api/v1/title").openConnection());
+                        (new URL("http://192.168.1.67:8081/api/v1/title").openConnection());
                 InputStream inputStream = uc.getInputStream();
                 String html = IOUtils.toString(inputStream);
                 String title = getPageTitle(html);
