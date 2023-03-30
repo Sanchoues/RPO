@@ -1,12 +1,17 @@
 
 package ru.iu3.backend.controllers;
+import jakarta.persistence.Column;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import ru.iu3.backend.models.Artist;
 import ru.iu3.backend.models.Country;
 import ru.iu3.backend.repositories.CountryRepository;
 
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -19,14 +24,6 @@ public class CountryController {
     getAllCountries() {
         return countryRepository.findAll();
     }
-
-
-    @PostMapping("/countries")
-    public ResponseEntity<Object> createCountry(@RequestBody Country country) {
-        Country nc = countryRepository.save(country);
-        return new ResponseEntity<Object>(nc, HttpStatus.OK);
-    }
-
 
     @Column(name = "name", nullable = false, unique = true)
     public String name;
@@ -80,5 +77,12 @@ public class CountryController {
             resp.put("deleted", Boolean.FALSE);
         return ResponseEntity.ok(resp);
     }
-
+    @GetMapping("/countries/{id}/artists")
+    public ResponseEntity<List<Artist>> getCountryArtists(@PathVariable(value = "id") Long countryId) {
+        Optional<Country> cc = countryRepository.findById(countryId);
+        if (cc.isPresent()) {
+            return ResponseEntity.ok(cc.get().artists);
+        }
+        return ResponseEntity.ok(new ArrayList<Artist>());
+    }
 }
