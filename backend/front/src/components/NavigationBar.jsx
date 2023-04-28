@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -5,7 +6,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faHome, faUser} from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, Link } from 'react-router-dom';
 import Utils from "../utils/Utils";
+import {alertActions, store} from "../utils/Rdx";
+import {connect} from "react-redux";
+import {userActions} from "../utils/Rdx";
 import BackendService from "../services/BackendService";
+
+
+axios.interceptors.request.use(
+    config => {
+        store.dispatch(alertActions.clear())
+        let token = Utils.getToken();
+        if (token)
+            config.headers.Authorization = token;
+        return config;
+})
+
 
 
 class NavigationBarClass extends React.Component {
@@ -20,36 +35,43 @@ class NavigationBarClass extends React.Component {
     }
 
     logout() {
-        BackendService.logout().then(() => {
-            Utils.removeUser();
-            this.goHome();
-        });
+        BackendService.logout()
+            .then(() => {
+                Utils.removeUser();
+                this.props.dispatch(userActions.logout())
+                this.props.navigate('Login');
+        })
     }
 
+
     render() {
-        let uname = Utils.getUserName();
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand><FontAwesomeIcon icon={faHome} />{' '}My RPO</Navbar.Brand>
+                <Navbar.Brand>myRPO</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
+                    <Nav className="ms-auto">
+                        {/*<Nav.Link href="/home">Home</Nav.Link>*/}
                         <Nav.Link as={Link} to="/home">Home</Nav.Link>
-                        <Nav.Link onClick={this.goHome}>Another Home</Nav.Link>
-                        <Nav.Link onClick={() =>{ this.props.navigate("\home")}}>Yet Another Home</Nav.Link>
+                        <Nav.Link onClick={this.goHome}>Another home</Nav.Link>
+                        <Nav.Link onClick={() => { this.props.history.push("/home")}} >Yet another home</Nav.Link>
                     </Nav>
-                    <Navbar.Text>{uname}</Navbar.Text>
-                    { uname &&
-                    <Nav.Link onClick={this.logout}><FontAwesomeIcon icon={faUser} fixedWidth />{' '}Выход</Nav.Link>
-                    }
-                    { !uname &&
-                    <Nav.Link as={Link} to="/login"><FontAwesomeIcon icon={faUser} fixedWidth />{' '}Вход</Nav.Link>
-                    }
                 </Navbar.Collapse>
+                <Navbar.Text>{this.props.user && this.props.user.login}</Navbar.Text>
+                { this.props.user &&
+                    <Nav.Link onClick={this.logout}><FontAwesomeIcon icon={faUser} fixedWidth />{' '}Выход</Nav.Link>
+                }
+                { !this.props.user &&
+                    <Nav.Link as={Link} to="/login"><FontAwesomeIcon icon={faUser} fixedWidth />{' '}Вход</Nav.Link>
+                }
             </Navbar>
         );
     }
+    
 }
+
+
 
 const NavigationBar = props => {
     const navigate = useNavigate()
@@ -57,4 +79,9 @@ const NavigationBar = props => {
     return <NavigationBarClass navigate={navigate} {...props} />
 }
 
-export default  NavigationBar;
+const mapStateToProps = state => {
+    const { user } = state.authentication;
+    return { user };
+}
+
+export default  connect(mapStateToProps)(NavigationBar);
