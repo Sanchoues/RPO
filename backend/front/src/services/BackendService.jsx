@@ -79,7 +79,7 @@ class BackendService {
     }
 
     /* Paintings */
-
+/*
     retrieveAllPaintings(page, limit) {
         return axios.get(`${API_URL}/paintings?page=${page}&limit=${limit}`);
     }
@@ -95,7 +95,7 @@ class BackendService {
     deletePaintings(paintings) {
         return axios.post(`${API_URL}/deletepaintings`, paintings);
     }
-
+*/
     /* Museums */
 
     retrieveAllMuseums(page, limit) {

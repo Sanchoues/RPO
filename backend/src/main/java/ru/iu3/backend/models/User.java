@@ -10,29 +10,34 @@ import java.util.Set;
 @Table(name = "users")
 @Access(AccessType.FIELD)
 public class User {
-    public User() {}
 
-    public User(Long id) { this.id = id; }
+    public User() {
+    }
+
+    public User(Long id) {
+        this.id = id;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
-    public Long id;
+    public long id;
 
     @Column(name = "login", unique = true, nullable = false)
     public String login;
 
+    @Transient
+    public String np;
+
     @JsonIgnore
     @Column(name = "password")
     public String password;
-
     @Column(name = "email", unique = true, nullable = false)
     public String email;
-
     @JsonIgnore
     @Column(name = "salt")
     public String salt;
-
+    @JsonIgnore
     @Column(name = "token")
     public String token;
 
@@ -46,6 +51,7 @@ public class User {
         this.museums.add(m);
         m.users.add(this);
     }
+
     public void removeMuseum(Museum m) {
         this.museums.remove(m);
         m.users.remove(this);

@@ -1,4 +1,4 @@
-package ru.iu3.backend;
+package ru.iu3.backend.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +31,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
     }
 
+
     @Override
     protected UserDetails retrieveUser(String userName,
                                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
@@ -38,7 +39,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
         Object token = usernamePasswordAuthenticationToken.getCredentials();
         Optional<ru.iu3.backend.models.User> uu = userRepository.findByToken(String.valueOf(token));
-        if (!uu.isPresent())
+        if (uu.isEmpty())
             throw new UsernameNotFoundException("user is not found");
         ru.iu3.backend.models.User u = uu.get();
 
@@ -49,16 +50,6 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             if (dt.isBefore(nt))
                 timeout = false;
         }
-        if (timeout) {
-            u.token = null;
-            userRepository.save(u);
-            throw new NonceExpiredException("session is expired");
-        }
-        else {
-            u.activity = dt;
-            userRepository.save(u);
-        }
-
         UserDetails user= new User(u.login, u.password,
                 true,
                 true,
@@ -67,6 +58,5 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
                 AuthorityUtils.createAuthorityList("USER"));
         return user;
     }
-
 
 }

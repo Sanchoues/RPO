@@ -37,7 +37,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
                 headerNames = httpServletRequest.getHeaderNames();
         String token= httpServletRequest.getHeader(AUTHORIZATION);
         if (token != null) {
-            token = StringUtils.removeStart(token, "token").trim();
+            token = StringUtils.removeStart(token, "Bearer ").trim();
         }
         Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(token, token);
         return getAuthenticationManager().authenticate(requestAuthentication);

@@ -11,6 +11,7 @@ import java.util.Set;
 @Table(name = "museums")
 @Access(AccessType.FIELD)
 public class Museum {
+    //public List<Painting> paintings;
 
     public Museum() { }
     public Museum(Long id) {
@@ -22,20 +23,19 @@ public class Museum {
     @Column(name = "id", updatable = false, nullable = false)
     public long id;
 
+
+    @JsonIgnore
     @Column(name = "name", nullable = false, unique = true)
     public String name;
 
+    @JsonIgnore
     @Column(name = "location", nullable = false)
     public String location;
 
- //   @JsonIgnore
-//    @OneToMany
-//    public List<Painting> paintings = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "usersmuseums", joinColumns = @JoinColumn(name = "museumid"),
             inverseJoinColumns = @JoinColumn(name = "userid"))
-    public Set<User>
-            users = new HashSet<>();
+    public Set<User> users = new HashSet<>();
 }

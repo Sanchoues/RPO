@@ -43,8 +43,8 @@ function App(props) {
                             <Route path="countries/:id" element={<ProtectedRoute><CountryComponent /></ProtectedRoute>}/>
                             <Route path="artists" element={<ProtectedRoute><ArtistListComponent/></ProtectedRoute>}/>
                             <Route path="artists/:id" element={<ProtectedRoute><ArtistComponent /></ProtectedRoute>}/>
-                            <Route path="paintings" element={<ProtectedRoute><PaintingListComponent/></ProtectedRoute>}/>
-                            <Route path="paintings/:id" element={<ProtectedRoute><PaintingComponent /></ProtectedRoute>}/>
+//                            <Route path="paintings" element={<ProtectedRoute><PaintingListComponent/></ProtectedRoute>}/>
+//                            <Route path="paintings/:id" element={<ProtectedRoute><PaintingComponent /></ProtectedRoute>}/>
                             <Route path="museums" element={<ProtectedRoute><MuseumListComponent/></ProtectedRoute>}/>
                             <Route path="museums/:id" element={<ProtectedRoute><MuseumComponent /></ProtectedRoute>}/>
                             <Route path="users" element={<ProtectedRoute><UserListComponent/></ProtectedRoute>}/>
